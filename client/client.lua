@@ -38,39 +38,38 @@ AddEventHandler("bls-atmhack:start", function()
         if not robbed and nearATM() then
             local player = PlayerPedId()
             local playerVeh = GetVehiclePedIsIn(player, false)
+            local playerPed = GetPlayerPed(-1)
+
 
             -- dispatch a police now please
-
+            TriggerEvent("bls-atmhack:connecting", playerPed)
             local jamCreditCardProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, 'Valmistad masinat ette häkkimiseks', false, false, playerVeh)
             
-            TriggerEvent("bls-atmhack:connecting")
             if (jamCreditCardProgress == 100) then
+                ClearPedTasks(playerPed)
                 TriggerEvent("bls-hackingdevices:start-hacking", RANDOM_HACKINGDEVICE, RANDOM_HACKINGDEVICE, math.random(BLSE.HackDurationMin, BLSE.HackDurationMax), hackCallback)
-
+            else
+                ClearPedTasks(playerPed)
             end
 
         else
-            TriggerEvent('DoLongHudText', 'Sa ei märka ühtegi kohta kuhu krediitkaarti torgata', 1)
+            TriggerEvent('DoLongHudText', 'Sa ei märka ühtegi kohta kuhu krediitkaarti torgata.', 1)
         end
 
     else
-        TriggerEvent('DoLongHudText', 'Sul ei ole ühtegi krediitkaarti', 1)
+        TriggerEvent('DoLongHudText', 'Sul ei ole ühtegi krediitkaarti.', 1)
     end
     
 end)
 
 RegisterNetEvent("bls-atmhack:connecting")
-AddEventHandler("bls-atmhack:connecting", function()
+AddEventHandler("bls-atmhack:connecting", function(playerPed)
     RequestAnimDict("mini@repair")
     while (not HasAnimDictLoaded("mini@repair")) do
         Citizen.Wait(0)
     end
 
-    local playerPed = GetPlayerPed(-1)
-
     TaskPlayAnim(playerPed, "mini@repair", "fixing_a_ped", 8.0, -8.0, -1, 50, 0, false, false, false)
-    Citizen.Wait(10 * SECOND)
-    ClearPedTasks(playerPed)
 end)
 
 RegisterNetEvent("bls-atmhack:collecting-money")
@@ -85,12 +84,8 @@ AddEventHandler("bls-atmhack:collecting-money", function()
 
     TaskPlayAnim(playerPed, "anim@heists@ornate_bank@grab_cash", "grab", 8.0, -8.0, -1, 50, 0, false, false, false)
 
-    -- if it is cancelable event, it should return a percentage of it being done
-    -- if that is possible, pass the percentage into hack-success without checking it to be 100.
     local collectingMoneyProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, 'Kogud masinast väljuvaid rahapakke', false, false, playerVeh)
-    if (collectingMoneyProgress == 100) then
-        ClearPedTasks(playerPed)
-        TriggerServerEvent("bls-atmhack:hack-success");
-    end
+    ClearPedTasks(playerPed)
+    TriggerServerEvent("bls-atmhack:hack-success", collectingMoneyProgress);
 
 end)
