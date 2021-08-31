@@ -33,7 +33,7 @@ end)
 RegisterNetEvent("bls-atmhack:start")
 AddEventHandler("bls-atmhack:start", function()
     if (exports["bls-inventory"]:hasEnoughOfItem("securityred", 1, false)) then
-        if not robbed and nearATM() 
+        if not robbed and nearATM() then
             TriggerEvent("inventory:removeItem", "securityred", 1)
             local player = PlayerPedId()
             local playerVeh = GetVehiclePedIsIn(player, false)
