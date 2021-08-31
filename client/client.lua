@@ -9,8 +9,9 @@ local function nearATM()
     local playerloc = GetEntityCoords(player, 0)
 
     for _, search in pairs(BLSE.atms) do
-        local distance = GetDistanceBetweenCoords(search.x, search.y, search.z, playerloc['x'], playerloc['y'], playerloc['z'], true)
-        if distance <= 2.5 then
+        local model = GetHashKey(search)
+        entity = GetClosestObjectOfType(playerloc['x'], playerloc['y', playerloc['z'], 2.5, model, false, false, false)
+        if entity ~= 0 then
             return true
         end
     end
