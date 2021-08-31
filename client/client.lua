@@ -1,10 +1,14 @@
+SECOND = 1000
+MINUTE = 60000
+RANDOM_HACKINGDEVICE = "RANDOM"
+
 local robbed = false
 
-function nearATM()
+local function nearATM()
     local player = GetPlayerPed(-1)
-	local playerloc = GetEntityCoords(player, 0)
+    local playerloc = GetEntityCoords(player, 0)
 
-    for _, search in pairs(BLSEGERT.atms) do
+    for _, search in pairs(BLSE.atms) do
         local distance = GetDistanceBetweenCoords(search.x, search.y, search.z, playerloc['x'], playerloc['y'], playerloc['z'], true)
         if distance <= 2.5 then
             return true
@@ -14,15 +18,15 @@ end
 
 local function hackCallback(result)
     if (result) then
-        TriggerServerEvent("bls-atmhack:hack-success");
+        TriggerEvent("bls-atmhack:collecting-money")
         robbed = true;
-        Citizen.Wait(1200000)
+        Citizen.Wait(math.random(BLSE.HackSuccessMinTimeout, BLSE.HackSuccessMaxTimeout) * MINUTE)
         robbed = false
-        --mony
+
     else
         TriggerEvent('DoLongHudText', 'Süsteemiühendus terminaliga katkes. Proovi hiljem uuesti', 1)
         robbed = true;
-        Citizen.Wait(600000)
+        Citizen.Wait(math.random(BLSE.HackFailureMinTimeout, BLSE.HackFailureMaxTimeout) * MINUTE)
         robbed = false
     end
 end
@@ -35,12 +39,13 @@ AddEventHandler("bls-atmhack:start", function()
             local player = PlayerPedId()
             local playerVeh = GetVehiclePedIsIn(player, false)
 
-            local jamCreditCardProgress = exports["bls-taskbar"]:taskBar(10000, 'Valmistad masinat ette häkkimiseks', false, false, playerVeh)
+            -- dispatch a police now please
+
+            local jamCreditCardProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, 'Valmistad masinat ette häkkimiseks', false, false, playerVeh)
+            
             TriggerEvent("bls-atmhack:connecting")
             if (jamCreditCardProgress == 100) then
-                -- dispatch a police now please
-                -- dispatch hackerman
-                TriggerEvent("bls-hackingdevices:start-hacking", "RANDOM", "RANDOM", 20, hackCallback)
+                TriggerEvent("bls-hackingdevices:start-hacking", RANDOM_HACKINGDEVICE, RANDOM_HACKINGDEVICE, math.random(BLSE.HackDurationMin, BLSE.HackDurationMax), hackCallback)
 
             end
 
@@ -60,7 +65,32 @@ AddEventHandler("bls-atmhack:connecting", function()
     while (not HasAnimDictLoaded("mini@repair")) do
         Citizen.Wait(0)
     end
-    TaskPlayAnim(GetPlayerPed(-1), "mini@repair", "fixing_a_ped", 8.0, -8.0, -1, 50, 0, false, false, false)
-    Citizen.Wait(10000)
-    ClearPedTasks(GetPlayerPed(-1))
+
+    local playerPed = GetPlayerPed(-1)
+
+    TaskPlayAnim(playerPed, "mini@repair", "fixing_a_ped", 8.0, -8.0, -1, 50, 0, false, false, false)
+    Citizen.Wait(10 * SECOND)
+    ClearPedTasks(playerPed)
+end)
+
+RegisterNetEvent("bls-atmhack:collecting-money")
+AddEventHandler("bls-atmhack:collecting-money", function()
+    RequestAnimDict("anim@heists@ornate_bank@grab_cash")
+    while (not HasAnimDictLoaded("anim@heists@ornate_bank@grab_cash")) do
+        Citizen.Wait(0)
+    end
+    local player = PlayerPedId()
+    local playerVeh = GetVehiclePedIsIn(player, false)
+    local playerPed = GetPlayerPed(-1)
+
+    TaskPlayAnim(playerPed, "anim@heists@ornate_bank@grab_cash", "grab", 8.0, -8.0, -1, 50, 0, false, false, false)
+
+    -- if it is cancelable event, it should return a percentage of it being done
+    -- if that is possible, pass the percentage into hack-success without checking it to be 100.
+    local collectingMoneyProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, 'Kogud masinast väljuvaid rahapakke', false, false, playerVeh)
+    if (collectingMoneyProgress == 100) then
+        ClearPedTasks(playerPed)
+        TriggerServerEvent("bls-atmhack:hack-success");
+    end
+
 end)

@@ -1,4 +1,4 @@
-BLSEGERT = {
+BLSE = {
     atms = {
         { name="ATM", id=277, x=-386.733, y=6045.953, z=31.501 },
         { name="ATM", id=277, x=-284.037, y=6224.385, z=31.187 },
@@ -92,5 +92,14 @@ BLSEGERT = {
     }
 }
 
-BLSEGERT.MinMoney = 2500;
-BLSEGERT.MaxMoney = 5000;
+BLSE.MinMoney = 2500
+BLSE.MaxMoney = 5000
+
+BLSE.HackSuccessMinTimeout = 20
+BLSE.HackSuccessMaxTimeout = 30
+
+BLSE.HackFailureMinTimeout = 10
+BLSE.HackFailureMaxTimeout = 20
+
+BLSE.HackDurationMin = 10
+BLSE.HackDurationMax = 20

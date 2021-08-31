@@ -2,5 +2,23 @@
     "cSpell.ignoreWords": [
         "event",
         "trigger"
+    ],
+    "Lua.diagnostics.globals": [
+        "Citizen",
+        "TriggerServerEvent",
+        "GetDistanceBetweenCoords",
+        "GetEntityCoords",
+        "GetPlayerPed",
+        "RegisterNetEvent",
+        "AddEventHandler",
+        "exports",
+        "PlayerPedId",
+        "GetVehiclePedIsIn",
+        "TriggerEvent",
+        "RequestAnimDict",
+        "HasAnimDictLoaded",
+        "TaskPlayAnim",
+        "ClearPedTasks",
+        "RegisterServerEvent"
     ]
 }
