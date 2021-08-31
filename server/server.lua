@@ -36,7 +36,3 @@ AddEventHandler("bls-atmhack:server:attempt-hack", function()
     end
 end)
 
--- bloki lokatsiooni atm
--- kas saab häkkida?
--- securityred vaja majasse juurde panna
-

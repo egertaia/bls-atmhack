@@ -28,7 +28,11 @@ end
 
 RegisterNetEvent("bls-atmhack:client:attempt-hack")
 AddEventHandler("bls-atmhack:client:attempt-hack", function()
-    TriggerServerEvent("bls-atmhack:server:attempt-hack")
+    if (exports["bls-inventory"]:hasEnoughOfItem("securityred", 1, false)) then
+        TriggerServerEvent("bls-atmhack:server:attempt-hack")
+    else
+        TriggerEvent("DoLongHudText", "Sul ei ole ühtegi krediitkaarti.", 2)
+    end
 end)
 
 RegisterNetEvent("bls-atmhack:start")
@@ -55,11 +59,11 @@ AddEventHandler("bls-atmhack:start", function()
             end
 
         else
-            TriggerEvent("DoLongHudText", "Sa ei märka ühtegi kohta kuhu krediitkaarti torgata.", 1)
+            TriggerEvent("DoLongHudText", "Sa ei märka ühtegi kohta kuhu krediitkaarti torgata.", 2)
         end
 
     else
-        TriggerEvent("DoLongHudText", "Sul ei ole ühtegi krediitkaarti.", 1)
+        TriggerEvent("DoLongHudText", "Sul ei ole ühtegi krediitkaarti.", 2)
     end
     
 end)
@@ -88,7 +92,7 @@ AddEventHandler("bls-atmhack:collecting-money", function()
 
     TaskPlayAnim(playerPed, "anim@heists@ornate_bank@grab_cash", "grab", 8.0, -8.0, -1, 50, 0, false, false, false)
 
-    local collectingMoneyProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, "Kogud masinast väljuvaid rahapakke", false, false, playerVeh)
+    local collectingMoneyProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, "Kogud väljuvaid rahapakke", false, false, playerVeh)
     ClearPedTasks(playerPed)
     SetPlayerControl(PlayerId(), 1, 1) -- unfroze
     TriggerServerEvent("bls-atmhack:hack-success", collectingMoneyProgress);
