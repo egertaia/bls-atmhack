@@ -41,7 +41,9 @@ AddEventHandler("bls-atmhack:start", function()
             local playerPed = GetPlayerPed(-1)
 
 
-            -- dispatch a police now please
+            -- TODO: USE PROPER DISPATCH
+            TriggerEvent("alert:noPedCheck", "storeRobbery")
+            
             TriggerEvent("bls-atmhack:connecting", playerPed)
             local jamCreditCardProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, 'Valmistad masinat ette häkkimiseks', false, false, playerVeh)
             
