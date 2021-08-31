@@ -21,6 +21,7 @@ local function hackCallback(result)
     if (result) then
         TriggerEvent("bls-atmhack:collecting-money")
     else
+        SetPlayerControl(PlayerId(), 1, 1) -- unfroze
         TriggerEvent("DoLongHudText", "Süsteemiühendus terminaliga katkes. Proovi hiljem uuesti", 1)
     end
 end
