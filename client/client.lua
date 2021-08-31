@@ -15,6 +15,7 @@ local function nearATM()
             return true
         end
     end
+    return false
 end
 
 local function hackCallback(result)
