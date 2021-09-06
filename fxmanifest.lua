@@ -1,9 +1,9 @@
 fx_version "cerulean"
 
-description "Basic ATM Hacking script utilizing bls-hackingdevices"
+description "Basic ATM Hacking script utilizing wrp-hackingdevices"
 author "egertaia"
 version '0.0.2'
-repository 'https://github.com/egertaia/bls-atmhack'
+repository 'https://github.com/egertaia/wrp-atmhack'
 
 lua54 'yes'
 

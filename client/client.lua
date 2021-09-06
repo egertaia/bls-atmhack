@@ -8,7 +8,7 @@ local function nearATM()
     local player = GetPlayerPed(-1)
     local playerloc = GetEntityCoords(player, 0)
 
-    for _, search in pairs(BLSE.atms) do
+    for _, search in pairs(EGERT.atms) do
         local model = GetHashKey(search)
         entity = GetClosestObjectOfType(playerloc["x"], playerloc["y"], playerloc["z"], 2.5, model, false, false, false)
         if entity ~= 0 then
@@ -20,25 +20,25 @@ end
 
 local function hackCallback(result)
     if (result) then
-        TriggerEvent("bls-atmhack:collecting-money")
+        TriggerEvent("wrp-atmhack:collecting-money")
     else
         SetPlayerControl(PlayerId(), 1, 1) -- unfroze
         TriggerEvent("DoLongHudText", "Süsteemiühendus terminaliga katkes. Proovi hiljem uuesti", 1)
     end
 end
 
-RegisterNetEvent("bls-atmhack:client:attempt-hack")
-AddEventHandler("bls-atmhack:client:attempt-hack", function()
-    if (exports["bls-inventory"]:hasEnoughOfItem("securityred", 1, false)) then
-        TriggerServerEvent("bls-atmhack:server:attempt-hack")
+RegisterNetEvent("wrp-atmhack:client:attempt-hack")
+AddEventHandler("wrp-atmhack:client:attempt-hack", function()
+    if (exports["wrp-inventory"]:hasEnoughOfItem("securityred", 1, false)) then
+        TriggerServerEvent("wrp-atmhack:server:attempt-hack")
     else
         TriggerEvent("DoLongHudText", "Sul ei ole ühtegi krediitkaarti.", 2)
     end
 end)
 
-RegisterNetEvent("bls-atmhack:start")
-AddEventHandler("bls-atmhack:start", function()
-    if (exports["bls-inventory"]:hasEnoughOfItem("securityred", 1, false)) then
+RegisterNetEvent("wrp-atmhack:start")
+AddEventHandler("wrp-atmhack:start", function()
+    if (exports["wrp-inventory"]:hasEnoughOfItem("securityred", 1, false)) then
         if not robbed and nearATM() then
             TriggerEvent("inventory:removeItem", "securityred", 1)
             local player = PlayerPedId()
@@ -48,12 +48,12 @@ AddEventHandler("bls-atmhack:start", function()
             -- TODO: USE PROPER DISPATCH
             TriggerEvent("alert:noPedCheck", "storeRobbery")
             
-            TriggerEvent("bls-atmhack:connecting", playerPed)
-            local jamCreditCardProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, "Valmistad masinat ette häkkimiseks", false, false, playerVeh)
+            TriggerEvent("wrp-atmhack:connecting", playerPed)
+            local jamCreditCardProgress = exports["wrp-taskbar"]:taskBar(10 * SECOND, "Valmistad masinat ette häkkimiseks", false, false, playerVeh)
             
             if (jamCreditCardProgress == 100) then
                 ClearPedTasks(playerPed)
-                TriggerEvent("bls-hackingdevices:start-hacking", RANDOM_HACKINGDEVICE, RANDOM_HACKINGDEVICE, math.random(BLSE.HackDurationMin, BLSE.HackDurationMax), hackCallback)
+                TriggerEvent("wrp-hackingdevices:start-hacking", RANDOM_HACKINGDEVICE, RANDOM_HACKINGDEVICE, math.random(EGERT.HackDurationMin, EGERT.HackDurationMax), hackCallback)
             else
                 ClearPedTasks(playerPed)
                 SetPlayerControl(PlayerId(), 1, 1) -- unfrozen
@@ -69,8 +69,8 @@ AddEventHandler("bls-atmhack:start", function()
     
 end)
 
-RegisterNetEvent("bls-atmhack:connecting")
-AddEventHandler("bls-atmhack:connecting", function(playerPed)
+RegisterNetEvent("wrp-atmhack:connecting")
+AddEventHandler("wrp-atmhack:connecting", function(playerPed)
     SetPlayerControl(PlayerId(), 0, 0) -- frozen
     RequestAnimDict("mini@repair")
     while (not HasAnimDictLoaded("mini@repair")) do
@@ -80,8 +80,8 @@ AddEventHandler("bls-atmhack:connecting", function(playerPed)
     TaskPlayAnim(playerPed, "mini@repair", "fixing_a_ped", 8.0, -8.0, -1, 50, 0, false, false, false)
 end)
 
-RegisterNetEvent("bls-atmhack:collecting-money")
-AddEventHandler("bls-atmhack:collecting-money", function()
+RegisterNetEvent("wrp-atmhack:collecting-money")
+AddEventHandler("wrp-atmhack:collecting-money", function()
     SetPlayerControl(PlayerId(), 0, 0) -- frozen
     RequestAnimDict("anim@heists@ornate_bank@grab_cash")
     while (not HasAnimDictLoaded("anim@heists@ornate_bank@grab_cash")) do
@@ -93,9 +93,9 @@ AddEventHandler("bls-atmhack:collecting-money", function()
 
     TaskPlayAnim(playerPed, "anim@heists@ornate_bank@grab_cash", "grab", 8.0, -8.0, -1, 50, 0, false, false, false)
 
-    local collectingMoneyProgress = exports["bls-taskbar"]:taskBar(10 * SECOND, "Kogud väljuvaid rahapakke", false, false, playerVeh)
+    local collectingMoneyProgress = exports["wrp-taskbar"]:taskBar(10 * SECOND, "Kogud väljuvaid rahapakke", false, false, playerVeh)
     ClearPedTasks(playerPed)
     SetPlayerControl(PlayerId(), 1, 1) -- unfroze
-    TriggerServerEvent("bls-atmhack:hack-success", collectingMoneyProgress);
+    TriggerServerEvent("wrp-atmhack:hack-success", collectingMoneyProgress);
 
 end)
